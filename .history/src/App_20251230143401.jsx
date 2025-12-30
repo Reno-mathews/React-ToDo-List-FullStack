@@ -36,8 +36,9 @@ function deleteTask(id) {
 }
 
 return (
-    <div>
-        <h1>React + Flask To-Do List</h1>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-md">
+        <h1 className="text-2xl font-bold mb-4 text-center">React + Flask To-Do List</h1>
 
         <input
         type="text"
