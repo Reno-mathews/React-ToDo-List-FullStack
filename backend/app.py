@@ -12,7 +12,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 class Task(db.Model):
-    id = db.Column(db.integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(255), nullable=False)
 
     def to_dict(self):
@@ -29,22 +29,19 @@ def get_tasks():
 
 @app.route("/tasks", methods=["POST"])
 def add_task():
-    global task_id
     data = request.json
 
-    task = {
-        "id": task_id,
-        "text": data["text"]
-    }
+    task = Task(text=data["text"])
+    db.session.add(task)
+    db.session.commit()
 
-    tasks.append(task)
-    task_id += 1
-    return jsonify(task), 201
+    return jsonify(task.to_dict()), 201
 
 @app.route("/tasks/<int:id>", methods=["DELETE"])
 def delete_task(id):
-    global tasks
-    tasks = [t for t in tasks if t["id"] != id]
+    task = Task.query.get_or_404(id)
+    db.session.delete(task)
+    db.session.commit()
     return "", 204
 
 if __name__ == "__main__":
