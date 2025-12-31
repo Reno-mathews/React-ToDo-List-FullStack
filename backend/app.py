@@ -11,13 +11,21 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
+class Task(db.Model):
+    id = db.Column(db.integer, primary_key=True)
+    text = db.Column(db.String(255), nullable=False)
 
-tasks = []
-task_id = 1
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "text": self.text
+        }
 
 @app.route("/tasks", methods=["GET"])
 def get_tasks():
-    return jsonify(tasks)
+    tasks = Task.query.all()
+    return jsonify([t.to_dict() for t in tasks])
+
 
 @app.route("/tasks", methods=["POST"])
 def add_task():
